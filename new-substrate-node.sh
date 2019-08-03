@@ -92,7 +92,7 @@ function replace {
 	done
 	rm -f $TEMP
 }
-replace "Template Node" "${name}"
+replace "Substrate Node" "${name}"
 replace node-template "${lname//[_ ]/-}"
 replace node_template "${lname//[- ]/_}"
 replace Anonymous "$author"
