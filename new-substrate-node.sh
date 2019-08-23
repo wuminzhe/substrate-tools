@@ -6,12 +6,13 @@ FONT_BOLD=$(tput bold);
 FONT_NORMAL=$(tput sgr0);
 
 echo
-echo -e "$COLOR_WHITE $FONT_BOLD testchain2 Template Setup $FONT_NORMAL";
+echo -e "$COLOR_WHITE $FONT_BOLD Substrate Template Setup $FONT_NORMAL";
 
-while getopts c:b:n:a: option
+while getopts v:c:b:n:a: option
 do
 case "${option}"
 in
+v) version=${OPTARG};;
 c) commit=${OPTARG};;
 b) branch=${OPTARG};;
 n) name=${OPTARG};;
@@ -21,14 +22,21 @@ done
 
 if [[ "$name" == "" || "$name" == "-"* ]]
 then
-  echo "  Usage: new-substrate-node.sh [ | -c commit | -b branch ] -n chainname -a auth"
+  echo "  Usage: new-substrate-node.sh [ | -c commit | -b branch ] -v 1|2 -n chainname -a auth"
   echo "  If commit or branch not provided, this script will use the head commit"
   echo 
   exit 1
 fi
 if [[ "$author" == "" || "$author" == "-"* ]]
 then
-  echo "  Usage: new-substrate-node.sh [ | -c commit | -b branch ] -n chainname -a auth"
+  echo "  Usage: new-substrate-node.sh [ | -c commit | -b branch ] -v 1|2 -n chainname -a auth"
+  echo "  If commit or branch not provided, this script will use the head commit"
+  echo
+  exit 1
+fi
+if [[ "$version" == "" || "$version" == "-"* ]]
+then
+  echo "  Usage: new-substrate-node.sh [ | -c commit | -b branch ] -v 1|2 -n chainname -a auth"
   echo "  If commit or branch not provided, this script will use the head commit"
   echo
   exit 1
@@ -133,13 +141,18 @@ EOL
 git add * .gitignore 2>/dev/null >/dev/null
 git commit -a -m "Initial clone from template node" 2>/dev/null >/dev/null
 
+
 echo "${bold}Initializing WebAssembly build environment...${normal}"
 ./scripts/init.sh 2>/dev/null >/dev/null
 
-./scripts/build.sh
+if [[ "$version" == "1" ]]
+then
+  echo "${bold}Build wasm ...${normal}"
+  ./scripts/build.sh
+fi
 
 echo "${bold}Building node...${normal}"
-cargo build --release
+cargo build # --release
 
 echo
 echo "${bold}Chain client created in ${dirname}${normal}."
