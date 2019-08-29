@@ -10,14 +10,14 @@ echo -e "$COLOR_WHITE $FONT_BOLD Substrate Template Setup $FONT_NORMAL";
 
 while getopts v:c:b:n:a: option
 do
-case "${option}"
-in
-v) version=${OPTARG};;
-c) commit=${OPTARG};;
-b) branch=${OPTARG};;
-n) name=${OPTARG};;
-a) author=${OPTARG};;
-esac
+  case "${option}"
+    in
+    v) version=${OPTARG};;
+    c) commit=${OPTARG};;
+    b) branch=${OPTARG};;
+    n) name=${OPTARG};;
+    a) author=${OPTARG};;
+  esac
 done
 
 if [[ "$name" == "" || "$name" == "-"* ]]
@@ -86,32 +86,31 @@ pushd $dirname >/dev/null
 
 echo "${bold}Customizing project...${normal}"
 function replace {
-	find_this="$1"
-	shift
-	replace_with="$1"
-	shift
-	IFS=$'\n'
-	TEMP=$(mktemp -d "${TMPDIR:-/tmp}/.XXXXXXXXXXXX")
-	rmdir $TEMP
-	for item in `find . -type f`
-	do
-		sed "s/$find_this/$replace_with/g" "$item" > $TEMP
-		cat $TEMP > "$item"
-	done
-	rm -f $TEMP
+  find_this="$1"
+  shift
+  replace_with="$1"
+  shift
+  IFS=$'\n'
+  TEMP=$(mktemp -d "${TMPDIR:-/tmp}/.XXXXXXXXXXXX")
+  rmdir $TEMP
+  for item in `find . -type f`
+  do
+    sed "s/$find_this/$replace_with/g" "$item" > $TEMP
+    cat $TEMP > "$item"
+  done
+  rm -f $TEMP
 }
 replace "Substrate Node" "${name}"
 replace node-template "${lname//[_ ]/-}"
 replace node_template "${lname//[- ]/_}"
 replace Anonymous "$author"
 
-TEMP=$(mktemp -d "${TMPDIR:-/tmp}/.YYYYYYYYYYYY")
-rmdir $TEMP
-
 
 if [[ "$branch" == "" || "$branch" == "-"* ]]
 then
 
+  TEMP=$(mktemp -d "${TMPDIR:-/tmp}/.YYYYYYYYYYYY")
+  rmdir $TEMP
   sed "s/path = \"\.\..*\"/git = 'https:\/\/github.com\/paritytech\/substrate.git', rev='$commit'/g" Cargo.toml > $TEMP
   cat $TEMP > Cargo.toml
   sed "s/path = \"\.\..*\"/git = 'https:\/\/github.com\/paritytech\/substrate.git', rev='$commit'/g" runtime/Cargo.toml > $TEMP
@@ -120,6 +119,8 @@ then
 
 else
 
+  TEMP=$(mktemp -d "${TMPDIR:-/tmp}/.YYYYYYYYYYYY")
+  rmdir $TEMP
   sed "s/path = \"\.\..*\"/git = 'https:\/\/github.com\/paritytech\/substrate.git', branch='$branch'/g" Cargo.toml > $TEMP
   cat $TEMP > Cargo.toml
   sed "s/path = \"\.\..*\"/git = 'https:\/\/github.com\/paritytech\/substrate.git', branch='$branch'/g" runtime/Cargo.toml > $TEMP
