@@ -109,7 +109,7 @@ replace Anonymous "$author"
 if [[ "$branch" == "" || "$branch" == "-"* ]]
 then
 
-  TEMP=$(mktemp -d "${TMPDIR:-/tmp}/.YYYYYYYYYYYY")
+  TEMP=$(mktemp -d "${TMPDIR:-/tmp}/.XXXXXXXXXXXX")
   rmdir $TEMP
   sed "s/path = \"\.\..*\"/git = 'https:\/\/github.com\/paritytech\/substrate.git', rev='$commit'/g" Cargo.toml > $TEMP
   cat $TEMP > Cargo.toml
@@ -119,7 +119,7 @@ then
 
 else
 
-  TEMP=$(mktemp -d "${TMPDIR:-/tmp}/.YYYYYYYYYYYY")
+  TEMP=$(mktemp -d "${TMPDIR:-/tmp}/.XXXXXXXXXXXX")
   rmdir $TEMP
   sed "s/path = \"\.\..*\"/git = 'https:\/\/github.com\/paritytech\/substrate.git', branch='$branch'/g" Cargo.toml > $TEMP
   cat $TEMP > Cargo.toml
